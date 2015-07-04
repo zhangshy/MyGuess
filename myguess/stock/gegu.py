@@ -5,6 +5,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 class Gegu():
     def __init__(self, fileName=None):
@@ -40,7 +41,9 @@ class Gegu():
 
 
 if __name__ == '__main__':
-    fileName = "600100.txt"
+    basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__))) #os.path.dirname可获取上一级目录
+    fileName = os.path.join(basedir, "data", "600100.txt")
+    print("fileName:%s" % (fileName))
     mygp = Gegu(fileName)
     #print(mygp._df)
     #print(mygp._df[u'时间'])
@@ -50,3 +53,4 @@ if __name__ == '__main__':
     mygp._df.iloc[-10:].plot(x=u'时间', y=[u'涨跌', u'高开', u'收盘']) #DataFrame.iloc[-10:]取后10行数据
     #plt.savefig("test.svg", format="svg")#保存svg格式图片
     plt.show() #添加plt.show()才能在程序中显示出图表
+
