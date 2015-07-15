@@ -10,6 +10,7 @@ import os
 class Gegu():
     def __init__(self, fileName=None):
         self._df = None
+        self.completed = False
         if isinstance(fileName, str):
             #使用gbk编码方式，delim_whitespace=True使用空格或tab作为分割符
             self._df = pd.read_csv(fileName, encoding="gbk", delim_whitespace=True)
@@ -35,6 +36,20 @@ class Gegu():
             self._df.loc[i, u'涨跌'] = row[u'收盘'] - last[u'收盘'] #dataframe.loc修改指定位置数据
             self._df.loc[i, u'高开'] = row[u'开盘'] - last[u'收盘'] #开盘价减昨天收盘价
             last = row
+        self.completed = True
+
+    def infos(self):
+        self.info = {}
+        if not self.completed:
+            self.completeData()
+        self.info['counts'] = len(self._df.index) #行数
+        self.info['k_up'] = len(self._df[self._df[u'K值']>0].index)
+        self.info['k_down'] = len(self._df[self._df[u'K值']<0].index)
+        self.info['k_equal'] = len(self._df[self._df[u'K值']==0].index)
+        self.info['up'] = len(self._df[self._df[u'涨跌']>0].index)
+        self.info['down'] = len(self._df[self._df[u'涨跌']<0].index)
+        self.info['equal'] = len(self._df[self._df[u'涨跌']==0].index)
+        return self.info
 
     def guessNext(self):
         return "Gegu test"
@@ -48,9 +63,11 @@ if __name__ == '__main__':
     #print(mygp._df)
     #print(mygp._df[u'时间'])
     mygp.completeData()
-    print(mygp._df[[u'开盘', u'收盘',u'K值', u'涨跌', u'高开']])
+    #print(mygp._df[[u'开盘', u'收盘',u'K值', u'涨跌', u'高开']])
     #mygp._df.iloc[-10:].plot(x=u'时间', y=[u'涨跌', u'高开', u'收盘'])
-    mygp._df.iloc[-10:].plot(x=u'时间', y=[u'涨跌', u'高开', u'收盘']) #DataFrame.iloc[-10:]取后10行数据
+    #mygp._df.iloc[-10:].plot(x=u'时间', y=[u'涨跌', u'高开', u'收盘']) #DataFrame.iloc[-10:]取后10行数据
     #plt.savefig("test.svg", format="svg")#保存svg格式图片
-    plt.show() #添加plt.show()才能在程序中显示出图表
+    #plt.show() #添加plt.show()才能在程序中显示出图表
+    info = mygp.infos()
+    print(info)
 
