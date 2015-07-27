@@ -51,6 +51,38 @@ class Gegu():
         self.info['equal'] = len(self._df[self._df[u'涨跌']==0].index)
         return self.info
 
+    def continue_list(self):
+        """
+        记录连续上涨或连续下跌的天数
+        :return:
+        """
+        ups = [[] for i in range(15)]
+        downs = [[] for i in range(15)]
+        if not self.completed:
+            self.completeData()
+        s = 0
+        uping = False
+        for i, row in self._df.iterrows():
+            if row[u'涨跌']>=0:
+                if not uping:
+                    if s!=0:
+                        downs[s-1].append(i)
+                        s = 0
+                uping = True
+                s += 1
+            else:
+                if uping:
+                    if s!=0:
+                        ups[s-1].append(i)
+                        s = 0
+                uping = False
+                s += 1
+        ret = {}
+        ret["ups"] = ups
+        ret['downs'] = downs
+        return ret
+
+
     def guessNext(self):
         return "Gegu test"
 
@@ -70,4 +102,12 @@ if __name__ == '__main__':
     #plt.show() #添加plt.show()才能在程序中显示出图表
     info = mygp.infos()
     print(info)
+    ret = mygp.continue_list()
+    print(ret)
+    ups = ret['ups']
+    downs = ret['downs']
+    print(ups)
+    print([len(t) for t in ups])
+    print(downs)
+    print([len(t) for t in downs])
 
