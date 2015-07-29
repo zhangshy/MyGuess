@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block body %}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-8">
+        {% for key, value in files %}
+          <li><a href="/{{ value.decode('gbk') }}">{{ key.decode('gbk') }}</a></li>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
